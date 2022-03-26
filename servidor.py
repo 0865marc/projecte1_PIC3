@@ -15,7 +15,6 @@ while True:
     data, adress = socket.recvfrom(4096)
 
     msg = data.decode("UTF-8")
-    print(msg) ##BORRAR DESPRES
 
     if msg[0] == "1":
         # Count number of mails
