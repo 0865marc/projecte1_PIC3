@@ -46,8 +46,8 @@ while True:
 
     elif msg[0] == "5":
         # Exit execution
-        sent = sock.sendto("Exited", adress)      #convertir "Exited" a bytes
-        time.sleep(1)
+        sent = sock.sendto("Exited".encode(), adress)      #convertir "Exited" a bytes
+        time.sleep(2)
         break
 
     else:

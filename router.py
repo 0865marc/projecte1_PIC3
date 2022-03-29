@@ -72,9 +72,14 @@ while True:
         msg = data_s.decode("UTF-8")
 
         if msg == "Exited":
+            if one_address_choose == "127.0.0.1":
+                sent_to_s = sock_s.sendto(data_c,("127.0.0.2",10000)) #Send data to the server
+            if one_address_choose == "127.0.0.2":
+                sent_to_s = sock_s.sendto(data_c,("127.0.0.1",10000)) #Send data to the server
+
             sent_to_c = connection.send(data_s) #Send data to the client
-            time.sleep(1)
-            print("adeu")
+            time.sleep(2)
+            print("Bye")
             break
 
         sent_to_c = connection.send(data_s) #Send data to the client
