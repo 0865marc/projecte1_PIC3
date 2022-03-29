@@ -1,6 +1,6 @@
-from email import message
 import socket
 import random
+import time
 
 ### STEP 1
 ##Socket creation TCP - receive the client petition  
@@ -8,7 +8,7 @@ sock_c = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 sock_c.bind(("127.0.0.10",10000))##Bind Socket
 sock_c.listen(1)
 connection, client_address = sock_c.accept()#Receive data
-data_c = connection.recv(16)
+data_c = connection.recv(50) #Data of client
 
 ### STEP 2
 ##Socket creation UDP - communicate with the servers
@@ -57,12 +57,24 @@ def error_message(result):
         connection.send("Error Message: Address malformed".encode("utf_8"))
 
 three_addresses = addresses('addresses.txt')
-one_address_choose = random_number(three_addresses)
+one_address_choose  = random_number(three_addresses)
+#print(one_address_choose)
+#print(len(one_address_choose))
 address_is_malformed = malformed(one_address_choose)
 e_message = error_message(address_is_malformed)
 
 ### STEP 4.c - If the address is correct it will send the request to the server
 while True:
-    sent = sock_s.sendto(data_c, ("127.0.0.11",10000)) #Send data
+    if address_is_malformed ==  True:
+        sent_to_s = sock_s.sendto(data_c,(one_address_choose,10000)) #Send data to the server
 
-##FALTA ACABAR...
+        data_s, addres = sock_s.recvfrom(4096) #Data of server
+        msg = data_s.decode("UTF-8")
+
+        if msg == "Exited":
+            sent_to_c = connection.send(data_s) #Send data to the client
+            time.sleep(1)
+            print("adeu")
+            break
+
+        sent_to_c = connection.send(data_s) #Send data to the client
