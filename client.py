@@ -12,8 +12,7 @@ while True:
     i=1
     print(i)
     #Information received from the server
-    x = range(1, 4)
-    if 1<= i and i <=3:
+    while 1<=i and i<=3:
         sock.send(number.encode()) 
         print("enviat")
         a = sock.recv(10000)
@@ -27,7 +26,6 @@ while True:
                 break
             elif msg == "Error Message: Address malformed":
                 print(msg)
-                sock.send(number.encode()) 
                 i+=1
                 print(i)
             else:
