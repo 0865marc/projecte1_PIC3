@@ -16,12 +16,11 @@ while True:
     data, adress = sock.recvfrom(4096)
 
     msg = data.decode("UTF-8")
-    print(msg)
     
     if msg[0] == "1":
         # Count number of mails
         n_mails = len(os.listdir("mails"))
-        sent = sock.sendto(n_mails.encode(), adress)      ##convertir n_mails a bytes
+        sent = sock.sendto(str(n_mails).encode(), adress)      ##convertir n_mails a bytes
 
     elif msg[0] == "2":
         # Return random mail
