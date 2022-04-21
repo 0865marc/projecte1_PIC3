@@ -1,0 +1,30 @@
+Utilizant 4 Raspberries, simularem que cada una tindra una funció:
+
+Raspberrie 1: CLIENT
+	Configuració utilitzada:
+		sudo ifconfig eth0 192.168.10.3
+	Modificació del codi:
+		sock.connect(("192.168.10.4",10000)) ##Send data - TCP
+
+Raspberrie 2: ROUTER
+	Configuració utilitzada:
+		sudo ifconfig eth0 192.168.10.4
+	Modificació del codi:
+		sock_c.bind(("192.168.10.4",10000)) ##Bind socket
+
+Raspberrie 3: SERVIDOR 1
+	Configuració utilitzada:
+		sudo ifconfig eth0 192.168.10.2
+	Modificació del codi:
+		sock.bind(("192.168.10.2",10000)) ##Bind socket
+
+Raspberrie 4: SERVIDOR 2
+	Configuració utilitzada:
+		sudo ifconfig eth0 192.168.10.1
+	Modificació del codi:
+		sock.bind(("192.168.10.1",10000)) ##Bind socket
+
+Una direcció IP es un protocol de comunicació que ens permet identificar a un dispositiu a la red, i a la vegada, 
+és possible que es puguin establir comunicacions entre ells. 
+Comprobem que les direccions IP de les Raspberrie són de tipus dinamic, ja que no són direccions fixes, sinó que 
+cada vegada que es reinicia el dispositiu, es modifiquen.
