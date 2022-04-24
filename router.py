@@ -6,7 +6,10 @@ import time
 #Creates a list of file addresses
 def addresses(filename): 
     with open(filename) as xfile:
-        list_addresses = xfile.readlines()
+        list_addresses = xfile.readlines()     #[127.0.0.1/n, 127.0.0.2/n, 127.0.1/n]
+
+    for i in range(len(list_addresses)):
+        list_addresses[i] = list_addresses[i][:-1]
    
     return list_addresses
 
@@ -48,41 +51,46 @@ def error_message(result):
 ##Socket creation TCP 
 sock_c = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 sock_c.bind(("127.0.0.10",10000))##Bind Socket
+sock_c.listen(1)
+connection, client_address = sock_c.accept()#Receive data
 
 ##Socket creation UDP - communicate with the servers
 sock_s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 
-while True:
+shouldContinue = True
+while shouldContinue:
     ##Receive the client petition
-    sock_c.listen(1)
-    print("escoltant")
-    connection, client_address = sock_c.accept()#Receive data
-    print('receive')
     data_c = connection.recv(50) #Data of client
-    print(data_c)
+    print("La opció triada pel client és: ", data_c.decode("utf-8"))
 
     ##Function call:
     three_addresses = addresses('addresses.txt')  #list of file addresses
     one_address_choose  = random_number(three_addresses) #Choose a random address
-    print(one_address_choose)
-    correct_or_malformed = form_address(one_address_choose) #Is the address malformed?
-    e_message = error_message(correct_or_malformed) #Send error message
+    print("Servidor aleatori escollit és: ", one_address_choose)
+    isCorrect = form_address(one_address_choose) #Is the address correct?
+    error_message(isCorrect) #Send error message
 
-    if correct_or_malformed ==  True:#If the address is correct it will send the request to the server
+    if isCorrect ==  True:#If the address is correct it will send the request to the server
+
         sent_to_s = sock_s.sendto(data_c,(one_address_choose,10000)) #Send data to the server
-
-        data_s, addres = sock_s.recvfrom(4096) #Data of server
+        data_s, addres = sock_s.recvfrom(4096) #Recieve data from server
         msg = data_s.decode("UTF-8")
+        print("Resposta rebuda del servidor: ", msg)
 
         if msg == "Exited":
-            for i in three_addresses: #For each address in the list
-                if form_address(i) == True: #If it is well formed
-                    print(i)
-                    sent_to_s = sock_s.sendto(data_c,(i,10000)) #Send data to the server
+            # Tancar la resta de servidors
+            shouldContinue = False
+
+            three_addresses.remove(one_address_choose)   # Eliminar el servidor que s'ha elegit aleatori de la llista, perque ja està tancat
+
+            for adress in three_addresses: #For each address in the list
+                if form_address(adress) == True: #If it is well formed
+                    if adress != one_address_choose:
+                        sent_to_s = sock_s.sendto(data_c,(adress,10000)) #Send data to the server
 
             sent_to_c = connection.send(data_s) #Send data to the client
-            time.sleep(2)
             print("Bye")
-            break
+            time.sleep(2)
 
         sent_to_c = connection.send(data_s) #Send data to the client
+        print("\n")
