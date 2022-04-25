@@ -2,10 +2,10 @@ import socket
 
 def check_input(number):
     if int(number) in list(range(1,6)):
-        print("La opció triada pel client és valida : ", number)
+        print("La opció triada pel client és vàlida : ", number)
         return True
     else:
-        print("La opció triada pel clien NO és valida : ", number)
+        print("La opció triada pel clien NO és vàlida : ", number)
         return False
 
 ##Socket creation
